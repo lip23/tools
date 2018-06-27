@@ -82,6 +82,7 @@ runcmd(struct cmd *cmd)
   _exit(0);
 }
 
+// 从stdin中读取输入，并保存在buf中
 int
 getcmd(char *buf, int nbuf)
 {
@@ -194,6 +195,7 @@ gettoken(char **ps, char *es, char **q, char **eq)
     s++;
     break;
   default:
+    printf("default ret = 'a'\n");
     ret = 'a';
     while(s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
       s++;
@@ -208,6 +210,9 @@ gettoken(char **ps, char *es, char **q, char **eq)
   return ret;
 }
 
+// 判断字符串*ps中是当前第一个非whitespace字符是否是字符串toks中的字符
+// es是字符串*ps的结尾哨兵
+// 返回的*ps已经指向了第一个非whitespace字符
 int
 peek(char **ps, char *es, char *toks)
 {
@@ -237,6 +242,7 @@ char
   return c;
 }
 
+// 解析s中的命令字符串，并返回cmd类型的命令
 struct cmd*
 parsecmd(char *s)
 {
@@ -244,6 +250,7 @@ parsecmd(char *s)
   struct cmd *cmd;
 
   es = s + strlen(s);
+  printf("'s'=%s'es'=%s\n", s, es);
   cmd = parseline(&s, es);
   peek(&s, es, "");
   if(s != es){
@@ -314,6 +321,7 @@ parseexec(char **ps, char *es)
   while(!peek(ps, es, "|")){
     if((tok=gettoken(ps, es, &q, &eq)) == 0)
       break;
+    printf("'tok'=%d\n",tok);
     if(tok != 'a') {
       fprintf(stderr, "syntax error\n");
       exit(-1);
